@@ -1,0 +1,96 @@
+{
+  "model_version": "risk-ml-v2 (sprint 4)",
+  "trained_at": "2026-10-30T03:37:24+00:00",
+  "dataset_rows": 4000,
+  "class_distribution": {
+    "ESTÁVEL": 1551,
+    "ATENÇÃO": 1340,
+    "CRÍTICO": 1109
+  },
+  "selected_model": "GradientBoosting",
+  "model_comparison": {
+    "LogisticRegression": {
+      "cv_f1_macro_mean": 0.6114,
+      "cv_f1_macro_std": 0.0161
+    },
+    "DecisionTree": {
+      "cv_f1_macro_mean": 0.8546,
+      "cv_f1_macro_std": 0.0125
+    },
+    "RandomForest": {
+      "cv_f1_macro_mean": 0.8937,
+      "cv_f1_macro_std": 0.0108
+    },
+    "GradientBoosting": {
+      "cv_f1_macro_mean": 0.8995,
+      "cv_f1_macro_std": 0.0103
+    }
+  },
+  "test_accuracy": 0.893,
+  "test_f1_macro": 0.8902,
+  "test_recall_critico": 0.8592,
+  "test_recall_critico_sistema": 0.917,
+  "test_accuracy_sistema": 0.906,
+  "confusion_matrix": [
+    [
+      369,
+      19,
+      0
+    ],
+    [
+      28,
+      286,
+      21
+    ],
+    [
+      1,
+      38,
+      238
+    ]
+  ],
+  "classification_report": {
+    "ESTÁVEL": {
+      "precision": 0.9271356783919598,
+      "recall": 0.9510309278350515,
+      "f1-score": 0.9389312977099237,
+      "support": 388.0
+    },
+    "ATENÇÃO": {
+      "precision": 0.8338192419825073,
+      "recall": 0.8537313432835821,
+      "f1-score": 0.8436578171091446,
+      "support": 335.0
+    },
+    "CRÍTICO": {
+      "precision": 0.918918918918919,
+      "recall": 0.8592057761732852,
+      "f1-score": 0.8880597014925373,
+      "support": 277.0
+    },
+    "accuracy": 0.893,
+    "macro avg": {
+      "precision": 0.893291279764462,
+      "recall": 0.8879893490973062,
+      "f1-score": 0.8902162721038686,
+      "support": 1000.0
+    },
+    "weighted avg": {
+      "precision": 0.893598629820761,
+      "recall": 0.893,
+      "f1-score": 0.8929232495564466,
+      "support": 1000.0
+    }
+  },
+  "feature_importances": {
+    "temp_celsius": 0.3546,
+    "movement_level": 0.1301,
+    "emergency_btn": 0.094,
+    "needs_post_op": 0.0634,
+    "hr_rel_high": 0.0554,
+    "days_post_op": 0.0543,
+    "age": 0.0502,
+    "hr_rel_low": 0.0411,
+    "heart_rate_bpm": 0.0011,
+    "species": 0.0005
+  }
+}

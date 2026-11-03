@@ -1,0 +1,20 @@
+# Ambiente e segredos
+.venv/
+venv/
+.env
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Banco local (recriado automaticamente com dados de exemplo)
+database/*.db
+database/*.db-journal
+docs/ROTEIRO_VIDEO_PITCH.md
+
+# Editores / SO
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

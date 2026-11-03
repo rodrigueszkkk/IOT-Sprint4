@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "author": "Kaiky Pereira, Leandro Guarido, Gabriel Solano",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "wokwi-arduino-uno", "id": "uno", "top": 120, "left": 180, "attrs": {} },
+    { "type": "wokwi-potentiometer", "id": "pot_temp", "top": 10, "left": 40, "attrs": { "label": "Temp (35-42C)" } },
+    { "type": "wokwi-potentiometer", "id": "pot_pulse", "top": 10, "left": 150, "attrs": { "label": "Pulso (BPM)" } },
+    { "type": "wokwi-pushbutton", "id": "btn_activity", "top": 280, "left": 50, "attrs": { "color": "blue", "label": "Movimento" } },
+    { "type": "wokwi-pushbutton", "id": "btn_emergency", "top": 360, "left": 50, "attrs": { "color": "red", "label": "SOS Tutor" } },
+    { "type": "wokwi-led", "id": "led_green", "top": -20, "left": 380, "attrs": { "color": "green", "label": "Estavel" } },
+    { "type": "wokwi-led", "id": "led_yellow", "top": -20, "left": 440, "attrs": { "color": "yellow", "label": "Atencao" } },
+    { "type": "wokwi-led", "id": "led_red", "top": -20, "left": 500, "attrs": { "color": "red", "label": "Critico" } },
+    { "type": "wokwi-resistor", "id": "r1", "top": 50, "left": 380, "attrs": { "value": "220" } },
+    { "type": "wokwi-resistor", "id": "r2", "top": 50, "left": 440, "attrs": { "value": "220" } },
+    { "type": "wokwi-resistor", "id": "r3", "top": 50, "left": 500, "attrs": { "value": "220" } },
+    { "type": "wokwi-buzzer", "id": "buzzer", "top": 130, "left": 530, "attrs": {} }
+  ],
+  "connections": [
+    [ "uno:5V", "pot_temp:VCC", "red", [ "v0" ] ],
+    [ "uno:A1", "pot_temp:SIG", "orange", [ "v0" ] ],
+    [ "uno:GND.2", "pot_temp:GND", "black", [ "v0" ] ],
+
+    [ "uno:5V", "pot_pulse:VCC", "red", [ "v0" ] ],
+    [ "uno:A0", "pot_pulse:SIG", "orange", [ "v0" ] ],
+    [ "uno:GND.1", "pot_pulse:GND", "black", [ "v0" ] ],
+
+    [ "uno:3", "btn_activity:2.l", "blue", [ "v0" ] ],
+    [ "uno:GND.2", "btn_activity:1.l", "black", [ "v0" ] ],
+
+    [ "uno:7", "btn_emergency:2.l", "purple", [ "v0" ] ],
+    [ "uno:GND.2", "btn_emergency:1.l", "black", [ "v0" ] ],
+
+    [ "uno:10", "r1:1", "green", [ "v0" ] ],
+    [ "r1:2", "led_green:A", "green", [ "v0" ] ],
+    [ "led_green:C", "uno:GND.1", "black", [ "v0" ] ],
+
+    [ "uno:11", "r2:1", "gold", [ "v0" ] ],
+    [ "r2:2", "led_yellow:A", "gold", [ "v0" ] ],
+    [ "led_yellow:C", "uno:GND.1", "black", [ "v0" ] ],
+
+    [ "uno:12", "r3:1", "red", [ "v0" ] ],
+    [ "r3:2", "led_red:A", "red", [ "v0" ] ],
+    [ "led_red:C", "uno:GND.1", "black", [ "v0" ] ],
+
+    [ "uno:13", "buzzer:2", "red", [ "v0" ] ],
+    [ "uno:GND.1", "buzzer:1", "black", [ "v0" ] ]
+  ],
+  "dependencies": {}
+}

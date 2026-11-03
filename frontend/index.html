@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CLYVO VET — Painel IoT & IA</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">🐾</span>
+      <div>
+        <h1>CLYVO VET</h1>
+        <p>Coleira inteligente · Classificação de risco por ML · Copiloto clínico (LLM + RAG)</p>
+      </div>
+    </div>
+    <div class="status-pills">
+      <span id="pill-llm" class="pill">IA: carregando…</span>
+      <span id="pill-model" class="pill">Modelo: —</span>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab active" data-tab="clinica" role="tab">🏥 Clínica · Triagem</button>
+    <button class="tab" data-tab="tutor" role="tab">📱 App do Tutor</button>
+    <button class="tab" data-tab="simulador" role="tab">📡 Simulador da Coleira</button>
+  </nav>
+
+  <main>
+    <!-- ============================== CLÍNICA ============================== -->
+    <section id="tab-clinica" class="tab-panel active">
+      <div class="grid-clinic">
+        <div class="card">
+          <h2>Fila de triagem em tempo real</h2>
+          <p class="muted">Ordenada pela prioridade calculada pelo modelo preditivo (P1 → P3).</p>
+          <ul id="triage-list" class="triage-list"></ul>
+        </div>
+
+        <div class="card" id="patient-card">
+          <div class="patient-head">
+            <div>
+              <h2 id="pt-name">Selecione um paciente</h2>
+              <p id="pt-meta" class="muted"></p>
+            </div>
+            <span id="pt-level" class="badge"></span>
+          </div>
+          <div class="vitals">
+            <div class="vital"><span class="label">Temperatura</span><span id="v-temp" class="value">—</span></div>
+            <div class="vital"><span class="label">Frequência cardíaca</span><span id="v-hr" class="value">—</span></div>
+            <div class="vital"><span class="label">Atividade</span><span id="v-mov" class="value">—</span></div>
+            <div class="vital"><span class="label">Confiança do modelo</span><span id="v-conf" class="value">—</span></div>
+          </div>
+          <div class="chart-wrap">
+            <svg id="chart" viewBox="0 0 600 180" preserveAspectRatio="none" aria-label="Gráfico de temperatura e frequência cardíaca"></svg>
+            <div class="legend"><span class="lg temp">Temperatura (°C)</span><span class="lg hr">FC (BPM)</span></div>
+          </div>
+          <div id="pt-anomalies" class="anomalies"></div>
+          <details class="records"><summary>Prontuário</summary><div id="pt-records"></div></details>
+        </div>
+
+        <div class="card">
+          <h2>Copiloto clínico — rascunho SOAP</h2>
+          <div id="alert-detail" class="muted">Nenhum alerta aberto para este paciente.</div>
+        </div>
+
+        <div class="card">
+          <h2>Notificações enviadas</h2>
+          <ul id="notif-list" class="notif-list"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== TUTOR ============================== -->
+    <section id="tab-tutor" class="tab-panel">
+      <div class="grid-tutor">
+        <div class="phone">
+          <div class="phone-head">
+            <select id="tutor-pet" aria-label="Pet"></select>
+            <span class="muted small">Assistente CLYVO</span>
+          </div>
+          <div id="chat-box" class="chat-box"></div>
+          <div class="suggestions" id="suggestions"></div>
+          <form id="chat-form" class="chat-form">
+            <input id="chat-input" placeholder="Pergunte sobre a recuperação do seu pet…" autocomplete="off" maxlength="1000">
+            <button type="submit">Enviar</button>
+          </form>
+        </div>
+        <div class="tutor-side">
+          <div class="card">
+            <div class="row-between">
+              <h2>Resumo do dia (IA)</h2>
+              <button id="btn-summary" class="btn ghost">Gerar resumo</button>
+            </div>
+            <div id="summary-box" class="muted">Clique em “Gerar resumo” para a IA analisar as últimas 24h da coleira.</div>
+          </div>
+          <div class="card">
+            <h2>Mensagens recebidas no WhatsApp</h2>
+            <ul id="tutor-alerts" class="wa-list"></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== SIMULADOR ============================== -->
+    <section id="tab-simulador" class="tab-panel">
+      <div class="grid-sim">
+        <div class="card">
+          <h2>Cenários clínicos prontos</h2>
+          <label class="field">Paciente <select id="sim-pet"></select></label>
+          <div class="scenario-grid">
+            <button class="btn ok" data-scenario="normal">💚 Recuperação normal</button>
+            <button class="btn warn" data-scenario="atencao">⚠️ Febrícula (atenção)</button>
+            <button class="btn danger" data-scenario="critico">🚨 Febre + agitação</button>
+            <button class="btn danger" data-scenario="sos">🆘 Botão SOS</button>
+            <button class="btn info" data-scenario="hipotermia">🥶 Hipotermia pós-anestésica</button>
+            <button class="btn warn" data-scenario="febre_progressiva">📈 Febre progressiva (6 leituras)</button>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Leitura manual (como o potenciômetro do Wokwi)</h2>
+          <label class="field">Temperatura: <b id="lbl-temp">38.5</b> °C<input id="in-temp" type="range" min="35" max="42" step="0.1" value="38.5"></label>
+          <label class="field">Frequência cardíaca: <b id="lbl-hr">95</b> BPM<input id="in-hr" type="range" min="40" max="240" step="1" value="95"></label>
+          <label class="field">Atividade
+            <select id="in-mov"><option>REPOUSO</option><option>MODERADO</option><option>ALTO</option></select>
+          </label>
+          <label class="check"><input id="in-sos" type="checkbox"> Botão SOS pressionado</label>
+          <button id="btn-send" class="btn primary">Enviar telemetria → API</button>
+        </div>
+        <div class="card span-2">
+          <h2>Resposta do pipeline</h2>
+          <pre id="sim-output" class="output">Envie uma leitura para ver o JSON processado (modelo + IA generativa).</pre>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">FIAP · Disruptive Architectures: IoT, IoB & Generative AI · Sprint 4 · Os textos gerados pela IA são apoio à decisão e devem ser validados pelo médico-veterinário.</footer>
+  <script src="app.js"></script>
+</body>
+</html>
