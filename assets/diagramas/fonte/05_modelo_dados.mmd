@@ -1,0 +1,82 @@
+%% Modelo de dados (docs/ARQUITETURA.md, seção 4)
+erDiagram
+    TUTORS ||--o{ PETS : possui
+    PETS ||--o{ MEDICAL_RECORDS : tem
+    PETS ||--o{ TELEMETRY : gera
+    PETS ||--o{ ALERTS : recebe
+    TELEMETRY ||--o| ALERTS : origina
+    ALERTS ||--o{ NOTIFICATIONS : dispara
+    PETS ||--o{ CHAT_MESSAGES : conversa
+
+    TUTORS {
+        int id PK
+        string name
+        string phone
+        string email
+    }
+    PETS {
+        int id PK
+        int tutor_id FK
+        string name
+        string species
+        string breed
+        real age
+        real weight_kg
+        bool needs_post_op
+        date surgery_date
+        string device_id
+    }
+    MEDICAL_RECORDS {
+        int id PK
+        int pet_id FK
+        date record_date
+        string description
+        string diagnosis
+        string treatment
+        string veterinarian
+    }
+    TELEMETRY {
+        int id PK
+        int pet_id FK
+        real temperature
+        int heart_rate
+        string movement_level
+        bool emergency
+        int risk_level
+        string risk_label
+        real confidence
+        json probabilities
+        json anomalies
+        datetime created_at
+    }
+    ALERTS {
+        int id PK
+        int pet_id FK
+        int telemetry_id FK
+        string source
+        int risk_level
+        string priority
+        text tutor_message
+        json soap
+        json hypotheses
+        json citations
+        string llm_mode
+        string status
+        datetime created_at
+    }
+    NOTIFICATIONS {
+        int id PK
+        int pet_id FK
+        int alert_id FK
+        string channel
+        string recipient
+        text message
+        string status
+    }
+    CHAT_MESSAGES {
+        int id PK
+        int pet_id FK
+        string role
+        text content
+        string llm_mode
+    }

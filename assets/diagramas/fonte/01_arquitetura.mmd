@@ -1,0 +1,47 @@
+%% Arquitetura da solução (README, seção 2)
+%% As ligações são entre os grupos (subgraphs) para o Mermaid respeitar o "direction LR" de cada um.
+flowchart TB
+    subgraph IoT["Camada IoT (borda)"]
+        direction LR
+        C["Coleira Arduino/Wokwi<br/>temperatura · FC · movimento · SOS"]
+        G["Gateway<br/>serial_bridge.py · collar_simulator.py"]
+        C -- "JSON serial" --> G
+    end
+    subgraph API["Backend FastAPI"]
+        direction LR
+        T["POST /api/telemetry"]
+        ML["Classificador de risco (ML)<br/>Gradient Boosting<br/>+ dupla checagem"]
+        RAG["Recuperação (RAG)<br/>TF-IDF híbrido<br/>10 protocolos"]
+        LLM["Copiloto generativo<br/>Google Gemini<br/>JSON Schema"]
+        GR["Guardrails<br/>emergência · medicamentos<br/>doses"]
+        CH["Assistente do tutor<br/>(chat)"]
+        T --> ML -- "risco ≥ ATENÇÃO" --> RAG --> LLM --> GR
+        CH --> RAG
+    end
+    DB[("Banco de dados<br/>pets · prontuário · telemetria<br/>alertas · chat · notificações")]
+    subgraph UI["Interfaces"]
+        direction LR
+        V["Painel da clínica<br/>fila de triagem + SOAP"]
+        U["App do tutor<br/>chat + WhatsApp + resumo"]
+    end
+
+    IoT -- "HTTP · POST /api/telemetry" --> API
+    API <-- "leituras, prontuário, alertas" --> DB
+    DB -- "fila P1/P2/P3 · alertas · notificações" --> UI
+    API <-. "chat do tutor (assistente)" .-> UI
+
+    classDef iot fill:#fdeee6,stroke:#e0662f,color:#17202e
+    classDef api fill:#e0f3f4,stroke:#0d7c86,color:#17202e
+    classDef ai fill:#e5eefc,stroke:#2f6fd6,color:#17202e
+    classDef safe fill:#fde6e6,stroke:#d23b3b,color:#17202e
+    classDef db fill:#eef1f5,stroke:#5f6b7c,color:#17202e
+    classDef ui fill:#e3f6ea,stroke:#1f9d55,color:#17202e
+    class C,G iot
+    class T,CH api
+    class ML,RAG,LLM ai
+    class GR safe
+    class DB db
+    class V,U ui
+    style IoT fill:#fffaf7,stroke:#e0662f,stroke-dasharray:4 3
+    style API fill:#f7fcfc,stroke:#0d7c86,stroke-dasharray:4 3
+    style UI fill:#f7fdf9,stroke:#1f9d55,stroke-dasharray:4 3

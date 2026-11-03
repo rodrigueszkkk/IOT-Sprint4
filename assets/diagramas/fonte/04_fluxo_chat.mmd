@@ -1,0 +1,27 @@
+%% Fluxo do assistente do tutor (docs/ARQUITETURA.md, seção 3)
+flowchart TD
+    A[Mensagem do tutor] --> B{{Sinal de emergência?}}
+    B -- sim --> C[Resposta imediata sem LLM<br/>+ alerta P1 para a clínica]
+    B -- não --> D{{Medicamento humano?}}
+    D -- sim --> E[Resposta segura padronizada]
+    D -- não --> F[RAG: protocolos da pergunta]
+    F --> G[Contexto: pet + prontuário + coleira<br/>+ histórico do chat]
+    G --> H{{Gemini respondeu?}}
+    H -- sim --> I[LLM responde]
+    H -- não --> J[Resposta offline por intenção]
+    I --> K[Guardrail: remove doses<br/>fora da prescrição]
+    J --> K
+    K --> L[(Grava conversa)]
+
+    classDef io fill:#fdeee6,stroke:#e0662f,color:#17202e
+    classDef step fill:#e0f3f4,stroke:#0d7c86,color:#17202e
+    classDef ai fill:#e5eefc,stroke:#2f6fd6,color:#17202e
+    classDef safe fill:#fde6e6,stroke:#d23b3b,color:#17202e
+    classDef db fill:#eef1f5,stroke:#5f6b7c,color:#17202e
+    classDef dec fill:#ffffff,stroke:#5f6b7c,color:#17202e
+    class A io
+    class G step
+    class F,I,J ai
+    class C,E,K safe
+    class L db
+    class B,D,H dec

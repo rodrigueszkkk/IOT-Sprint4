@@ -60,35 +60,13 @@ Repositório da **4ª Sprint** da disciplina **Disruptive Architectures: IoT, Io
 
 ## 2. Arquitetura
 
-```mermaid
-flowchart LR
-    subgraph IoT["Camada IoT (borda)"]
-        C["Coleira Arduino/Wokwi<br/>temp · FC · movimento · SOS"]
-        G["Gateway<br/>serial_bridge.py / collar_simulator.py"]
-    end
-    subgraph API["Backend FastAPI"]
-        T["POST /api/telemetry"]
-        ML["Classificador de risco<br/>Gradient Boosting + dupla checagem"]
-        RAG["Recuperação (RAG)<br/>TF-IDF híbrido · 10 protocolos"]
-        LLM["Copiloto Generativo<br/>Gemini · JSON Schema"]
-        GR["Guardrails<br/>emergência · medicamentos · doses"]
-        CH["Assistente do tutor"]
-    end
-    DB[("Banco de dados<br/>pets · prontuário · telemetria<br/>alertas · chat · notificações")]
-    subgraph UI["Interfaces"]
-        V["Painel da clínica<br/>triagem + SOAP"]
-        U["App do tutor<br/>chat + WhatsApp + resumo"]
-    end
-    C -- JSON serial --> G -- HTTP --> T --> ML
-    ML -- risco ≥ ATENÇÃO --> RAG --> LLM --> GR
-    T <--> DB
-    GR --> DB
-    DB --> V
-    DB --> U
-    U -- pergunta --> CH --> RAG
-```
+<p align="center">
+  <img src="assets/diagramas/01_arquitetura.png" alt="Arquitetura da solução: coleira IoT, gateway, backend FastAPI com ML, RAG, Gemini e guardrails, banco de dados e interfaces">
+</p>
 
-Detalhes (diagrama de sequência, decisões de projeto e modelo de dados) em [`docs/ARQUITETURA.md`](docs/ARQUITETURA.md). O diagrama conceitual da Sprint 3 continua em [`assets/iot_ai_architecture.png`](assets/iot_ai_architecture.png).
+Fluxos detalhados (telemetria e chat), modelo de dados e decisões de projeto em [`docs/ARQUITETURA.md`](docs/ARQUITETURA.md). O diagrama conceitual da Sprint 3 continua em [`assets/iot_ai_architecture.png`](assets/iot_ai_architecture.png).
+
+> As imagens dos diagramas ficam em `assets/diagramas/`. As fontes editáveis (Mermaid) estão em `assets/diagramas/fonte/`; depois de alterar alguma, gere as imagens de novo com `python assets/diagramas/gerar_diagramas.py` (requer `pip install playwright` e o Edge ou o Chrome instalado).
 
 ---
 
@@ -138,32 +116,9 @@ O modo em uso aparece no topo do painel e em cada alerta (`llm_mode`).
 
 ## 4. Integração: interface, banco, APIs e IA
 
-```mermaid
-sequenceDiagram
-    participant Coleira
-    participant Gateway
-    participant API as API FastAPI
-    participant ML as Modelo ML
-    participant DB as Banco
-    participant RAG
-    participant LLM as Gemini
-    participant Tutor
-    participant Clinica as Clínica
-    Coleira->>Gateway: {"temperatura":39.9,"bpm":152,"movimento":true}
-    Gateway->>API: POST /api/telemetry
-    API->>ML: features do pet + leitura
-    ML-->>API: CRÍTICO (97%) + anomalias
-    API->>DB: grava telemetria + inferência
-    API->>DB: busca prontuário e histórico
-    API->>RAG: anomalias + procedimento
-    RAG-->>API: protocolos [K1..K4]
-    API->>LLM: contexto + JSON Schema
-    LLM-->>API: mensagem tutor + SOAP + hipóteses
-    API->>API: guardrails na saída
-    API->>DB: grava alerta + notificações
-    API-->>Tutor: WhatsApp (simulado)
-    API-->>Clinica: fila de triagem P1 + rascunho SOAP
-```
+<p align="center">
+  <img src="assets/diagramas/02_sequencia_alerta.png" alt="Diagrama de sequência: da leitura crítica da coleira ao WhatsApp do tutor e à fila de triagem da clínica">
+</p>
 
 ### Endpoints principais (documentação completa em `http://localhost:8000/docs`)
 
@@ -379,7 +334,7 @@ Sprint04-IOT/
 ├── database/schema_mysql.sql   # Schema de produção (MySQL 8)
 ├── tests/                      # 38 testes automatizados
 ├── docs/                       # Arquitetura, resultados, roteiro do vídeo
-├── assets/                     # Diagrama de arquitetura (Sprint 3)
+├── assets/                     # Diagramas em PNG (assets/diagramas/) + diagrama conceitual da Sprint 3
 ├── ENTREGA_SPRINT4.md          # Documento de entrega (links)
 ├── requirements.txt · run.py · .env.example
 ```

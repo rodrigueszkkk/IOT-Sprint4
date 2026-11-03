@@ -1,0 +1,35 @@
+%% Integração ponta a ponta de uma leitura crítica (README, seção 4)
+sequenceDiagram
+    autonumber
+    participant Coleira
+    participant Gateway
+    participant API as API FastAPI
+    participant ML as Modelo ML
+    participant DB as Banco
+    participant RAG
+    participant LLM as Gemini
+    participant Tutor
+    participant Clinica as Clínica
+
+    rect rgb(253, 238, 230)
+    Coleira->>Gateway: {"temperatura":39.9,"bpm":152,"movimento":true}
+    Gateway->>API: POST /api/telemetry
+    end
+    rect rgb(229, 238, 252)
+    API->>ML: features do pet + leitura
+    ML-->>API: CRÍTICO (97%) + anomalias
+    API->>DB: grava telemetria + inferência
+    end
+    rect rgb(224, 243, 244)
+    API->>DB: busca prontuário e histórico
+    API->>RAG: anomalias + procedimento
+    RAG-->>API: protocolos [K1..K4]
+    API->>LLM: contexto + JSON Schema
+    LLM-->>API: mensagem do tutor + SOAP + hipóteses
+    API->>API: guardrails na saída
+    end
+    rect rgb(227, 246, 234)
+    API->>DB: grava alerta + notificações
+    API-->>Tutor: WhatsApp (simulado)
+    API-->>Clinica: fila de triagem P1 + rascunho SOAP
+    end

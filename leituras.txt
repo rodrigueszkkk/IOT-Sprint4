@@ -1,0 +1,2 @@
+{"deviceId":"CLYVO-COLLAR-01","petId":1,"petName":"Thor","temperatura":38.6,"bpm":96,"movimento":false,"sos":false,"status":"ESTAVEL","riskScore":0}
+{"deviceId":"CLYVO-COLLAR-01","petId":1,"petName":"Thor","temperatura":39.9,"bpm":152,"movimento":true,"sos":false,"status":"CRITICO","riskScore":6}

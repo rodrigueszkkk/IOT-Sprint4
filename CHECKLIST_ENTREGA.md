@@ -20,9 +20,9 @@
 ## 3. Repositório GitHub (vale até 20 pontos)
 - [ ] Criar o repositório (sugestão: `Sprint04-IOT`) e subir o conteúdo da pasta `Sprint04-IOT/`
 - [ ] **Não** subir o `.env` (já está no `.gitignore`); conferir que a chave não aparece em nenhum arquivo
-- [ ] Conferir que `models/risk_model.joblib`, `ai/data/` e `docs/RESULTADOS.md` foram enviados
+- [ ] Conferir que `models/risk_model.joblib`, `ai/data/`, `assets/diagramas/` e `docs/RESULTADOS.md` foram enviados
 - [ ] Atualizar no README: link do repositório (seção 7.1, `git clone ...`) e link do vídeo
-- [ ] Abrir o README no GitHub e verificar se os diagramas Mermaid e as tabelas aparecem corretamente
+- [ ] Abrir o README no GitHub e verificar se as imagens dos diagramas (`assets/diagramas/`) e as tabelas aparecem corretamente
 - [ ] Deixar o repositório **público** (ou dar acesso ao professor)
 
 ## 4. Vídeo pitch (vale até 20 pontos)

@@ -16,68 +16,21 @@
 
 ## 2. Fluxo de uma leitura de telemetria
 
-```mermaid
-flowchart TD
-    A[Leitura JSON da coleira] --> B{Pydantic valida<br/>e normaliza campos}
-    B -- inválida --> X[HTTP 422]
-    B --> C[Identifica o pet pelo deviceId/petId]
-    C --> D[Modelo de ML: probabilidades por classe]
-    D --> E{SOS ou limite crítico<br/>do protocolo?}
-    E -- sim --> F[Força CRÍTICO<br/>dupla checagem]
-    E -- não --> G[Mantém decisão do modelo]
-    F --> H[(Grava telemetria + inferência)]
-    G --> H
-    H --> I{Risco ≥ ATENÇÃO?}
-    I -- não --> Z[Fim: paciente estável]
-    I -- sim --> J{Alerta igual há < 5 min<br/>sem agravamento?}
-    J -- sim --> Y[Anti-spam: não repete]
-    J -- não --> K[Monta contexto: pet + prontuário<br/>+ tendência + protocolos RAG]
-    K --> L{Gemini respondeu?}
-    L -- sim --> M[LLM com JSON Schema]
-    L -- não/erro --> N[Gerador offline determinístico]
-    M --> O[Guardrails na saída]
-    N --> O
-    O --> P[(Grava alerta + notificações)]
-    P --> Q[WhatsApp do tutor]
-    P --> R[Fila de triagem da clínica]
-```
+<p align="center">
+  <img src="../assets/diagramas/03_fluxo_telemetria.png" alt="Fluxo de uma leitura de telemetria: validação, ML, dupla checagem, anti-spam, Gemini e guardrails" width="620">
+</p>
 
 ## 3. Fluxo do assistente do tutor
 
-```mermaid
-flowchart TD
-    A[Mensagem do tutor] --> B{Sinal de emergência?}
-    B -- sim --> C[Resposta imediata sem LLM<br/>+ alerta P1 para a clínica]
-    B -- não --> D{Medicamento humano?}
-    D -- sim --> E[Resposta segura padronizada]
-    D -- não --> F[RAG: protocolos da pergunta]
-    F --> G[Contexto: pet + prontuário + coleira + histórico do chat]
-    G --> H{Gemini respondeu?}
-    H -- sim --> I[LLM responde]
-    H -- não --> J[Resposta offline por intenção]
-    I --> K[Guardrail: remove doses fora da prescrição]
-    J --> K
-    K --> L[(Grava conversa)]
-```
+<p align="center">
+  <img src="../assets/diagramas/04_fluxo_chat.png" alt="Fluxo do assistente do tutor: guardrails de emergência e medicamentos, RAG, Gemini e guardrail de doses" width="560">
+</p>
 
 ## 4. Modelo de dados
 
-```mermaid
-erDiagram
-    TUTORS ||--o{ PETS : possui
-    PETS ||--o{ MEDICAL_RECORDS : tem
-    PETS ||--o{ TELEMETRY : gera
-    PETS ||--o{ ALERTS : recebe
-    TELEMETRY ||--o| ALERTS : origina
-    ALERTS ||--o{ NOTIFICATIONS : dispara
-    PETS ||--o{ CHAT_MESSAGES : conversa
-    PETS { int id string name string species string breed real age bool needs_post_op date surgery_date string device_id }
-    MEDICAL_RECORDS { int id date record_date string description string diagnosis string treatment string veterinarian }
-    TELEMETRY { int id real temperature int heart_rate string movement_level bool emergency int risk_level real confidence json probabilities json anomalies }
-    ALERTS { int id string source int risk_level string priority text tutor_message json soap json hypotheses json citations string llm_mode string status }
-    NOTIFICATIONS { int id string channel string recipient text message string status }
-    CHAT_MESSAGES { int id string role text content string llm_mode }
-```
+<p align="center">
+  <img src="../assets/diagramas/05_modelo_dados.png" alt="Modelo de dados: tutors, pets, medical_records, telemetry, alerts, notifications e chat_messages" width="620">
+</p>
 
 ## 5. Decisões de projeto
 

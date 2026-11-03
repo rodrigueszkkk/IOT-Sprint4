@@ -1,0 +1,39 @@
+%% Fluxo de uma leitura de telemetria (docs/ARQUITETURA.md, seção 2)
+flowchart TD
+    A[Leitura JSON da coleira] --> B{{Pydantic valida<br/>e normaliza campos}}
+    B -- inválida --> X[HTTP 422]
+    B --> C[Identifica o pet pelo deviceId/petId]
+    C --> D[Modelo de ML: probabilidades por classe]
+    D --> E{{SOS ou limite crítico<br/>do protocolo?}}
+    E -- sim --> F[Força CRÍTICO<br/>dupla checagem]
+    E -- não --> G[Mantém decisão do modelo]
+    F --> H[(Grava telemetria + inferência)]
+    G --> H
+    H --> I{{Risco ≥ ATENÇÃO?}}
+    I -- não --> Z[Fim: paciente estável]
+    I -- sim --> J{{Alerta igual há < 5 min<br/>sem agravamento?}}
+    J -- sim --> Y[Anti-spam: não repete]
+    J -- não --> K[Monta contexto: pet + prontuário<br/>+ tendência + protocolos RAG]
+    K --> L{{Gemini respondeu?}}
+    L -- sim --> M[LLM com JSON Schema]
+    L -- não/erro --> N[Gerador offline determinístico]
+    M --> O[Guardrails na saída]
+    N --> O
+    O --> P[(Grava alerta + notificações)]
+    P --> Q[WhatsApp do tutor]
+    P --> R[Fila de triagem da clínica]
+
+    classDef io fill:#fdeee6,stroke:#e0662f,color:#17202e
+    classDef step fill:#e0f3f4,stroke:#0d7c86,color:#17202e
+    classDef ai fill:#e5eefc,stroke:#2f6fd6,color:#17202e
+    classDef safe fill:#fde6e6,stroke:#d23b3b,color:#17202e
+    classDef db fill:#eef1f5,stroke:#5f6b7c,color:#17202e
+    classDef out fill:#e3f6ea,stroke:#1f9d55,color:#17202e
+    classDef dec fill:#ffffff,stroke:#5f6b7c,color:#17202e
+    class A io
+    class C,G,K step
+    class D,M,N ai
+    class X,F,Y,O safe
+    class H,P db
+    class Z,Q,R out
+    class B,E,I,J,L dec
